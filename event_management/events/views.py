@@ -37,7 +37,9 @@ class EventForm(forms.ModelForm):
 
 
 def all_events(request: HttpRequest) -> HttpResponse:
-    events: QuerySet[UserEvents] = UserEvents.objects.all()
+    events: QuerySet[UserEvents] = UserEvents.objects.all().prefetch_related(
+        "attendees",
+    )
 
     search_query: str | None = request.GET.get("search")
     if search_query:
