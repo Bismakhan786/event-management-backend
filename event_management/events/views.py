@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from allauth.account.decorators import verified_email_required
 from django import forms
+from django.contrib import messages
 from django.http import HttpRequest
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -94,3 +95,16 @@ def delete_event(request: HttpRequest, event_id: int) -> HttpResponse:
 
     event.delete()
     return redirect("/events/all-events/")
+
+
+@verified_email_required
+def attend_event(request: HttpRequest, event_id: int) -> HttpResponse:
+    event: UserEvents = get_object_or_404(UserEvents, id=event_id)
+    if request.user in event.attendees.all():
+        messages.error(request, "You are already attending this event.")
+        return redirect("/events/all-events")
+
+    event.attendees.add(request.user)
+    messages.success(request, "You are now attending the event.")
+
+    return redirect("/events/all-events")

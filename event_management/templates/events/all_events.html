@@ -39,10 +39,31 @@
           <td>{{ event.owner.username }}</td>
           <td>{{ event.attendees.count }}</td>
           <td>
-            <a href="{% url 'events:delete_event' event.id %}"
-               class="btn btn-danger my-2">Delete</a>
-            <a href="{% url 'events:update_event' event.id %}"
-               class="btn btn-success">Update</a>
+            {% if request.user == event.owner %}
+              <a href="{% url 'events:delete_event' event.id %}"
+                 class="btn btn-danger my-2">Delete</a>
+              <a href="{% url 'events:update_event' event.id %}"
+                 class="btn btn-success">Update</a>
+            {% else %}
+              {% if request.user not in event.attendees.all %}
+                <a href="{% url 'events:attend_event' event.id %}"
+                   class="btn btn-success">Attend</a>
+              {% else %}
+                <button class="btn btn-success" disabled>Attend</button>
+              {% endif %}
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td colspan="8">
+            <strong>List of Attendees</strong>
+            <ul>
+              {% for attendee in event.attendees.all %}
+                <li>{{ attendee.username }}</li>
+              {% empty %}
+                <li>No attendees yet.</li>
+              {% endfor %}
+            </ul>
           </td>
         </tr>
       {% endfor %}
