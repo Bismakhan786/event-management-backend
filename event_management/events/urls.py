@@ -9,6 +9,6 @@ app_name = "events"
 urlpatterns = [
     path("all-events/", view=all_events, name="all_events"),
     path("create-event/", view=create_event, name="create_event"),
-    path("delete-event/<id>/", view=delete_event, name="delete_event"),
-    path("update-event/<id>/", view=update_event, name="update_event"),
+    path("delete-event/<int:event_id>/", view=delete_event, name="delete_event"),
+    path("update-event/<int:event_id>/", view=update_event, name="update_event"),
 ]

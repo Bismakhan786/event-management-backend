@@ -67,6 +67,9 @@ def create_event(request: HttpRequest) -> HttpResponse:
 def update_event(request: HttpRequest, event_id: int) -> HttpResponse:
     event: UserEvents = get_object_or_404(UserEvents, id=event_id)
 
+    if request.user != event.owner:
+        return redirect("/403/")
+
     if request.method == "POST":
         form: EventForm = EventForm(request.POST, instance=event)
         if form.is_valid():
@@ -83,6 +86,9 @@ def update_event(request: HttpRequest, event_id: int) -> HttpResponse:
 @verified_email_required
 def delete_event(request: HttpRequest, event_id: int) -> HttpResponse:
     event: UserEvents = get_object_or_404(UserEvents, id=event_id)
+
+    if request.user != event.owner:
+        return redirect("/403/")
 
     event.delete()
     return redirect("/events/all-events/")
