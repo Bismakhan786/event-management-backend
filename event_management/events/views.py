@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING
 
+from allauth.account.decorators import verified_email_required
 from django import forms
 from django.http import HttpRequest
 from django.http import HttpResponse
@@ -36,9 +37,7 @@ class EventForm(forms.ModelForm):
 
 
 def all_events(request: HttpRequest) -> HttpResponse:
-    events: QuerySet[UserEvents] = UserEvents.objects.all().prefetch_related(
-        "attendees",
-    )
+    events: QuerySet[UserEvents] = UserEvents.objects.all()
 
     search_query: str | None = request.GET.get("search")
     if search_query:
@@ -48,6 +47,7 @@ def all_events(request: HttpRequest) -> HttpResponse:
     return render(request, "events/all_events.html", context)
 
 
+@verified_email_required
 def create_event(request: HttpRequest) -> HttpResponse:
     if request.method == "POST":
         form: EventForm = EventForm(request.POST)
@@ -63,6 +63,7 @@ def create_event(request: HttpRequest) -> HttpResponse:
     return render(request, "events/create_event.html", context)
 
 
+@verified_email_required
 def update_event(request: HttpRequest, event_id: int) -> HttpResponse:
     event: UserEvents = get_object_or_404(UserEvents, id=event_id)
 
@@ -79,6 +80,7 @@ def update_event(request: HttpRequest, event_id: int) -> HttpResponse:
     return render(request, "events/update_event.html", context)
 
 
+@verified_email_required
 def delete_event(request: HttpRequest, event_id: int) -> HttpResponse:
     event: UserEvents = get_object_or_404(UserEvents, id=event_id)
 
