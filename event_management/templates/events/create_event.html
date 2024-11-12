@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <form class="col-6 mx-auto card p-3 shadow-sm"
+        method="post"
+        enctype="multipart/form-data">
+    {% csrf_token %}
+    <h2>Add Event</h2>
+    <hr />
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">Create Event</button>
+  </form>
+{% endblock content %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+  <a href="{% url 'events:create_event' %}" class="btn btn-info">Create Event</a>
+  <div class="mt-5">
+    <div class="mx-auto">
+      <form>
+        <div class="mb-3">
+          <label for="exampleInputEmail1" class="form-label">Search Event</label>
+          <input type="text" name="search" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+    </div>
+  </div>
+  <table class="table mt-5">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Title</th>
+        <th scope="col">Description</th>
+        <th scope="col">Date</th>
+        <th scope="col">Location</th>
+        <th scope="col">Owner</th>
+        <th scope="col">Attendees</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for event in events %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{ event.title }}</td>
+          <td>{{ event.description }}</td>
+          <td>{{ event.date }}</td>
+          <td>{{ event.location }}</td>
+          <td>{{ event.owner.username }}</td>
+          <td>{{ event.attendees.count }}</td>
+          <td>
+            <a href="{% url 'events:delete_event' event.id %}"
+               class="btn btn-danger my-2">Delete</a>
+            <a href="{% url 'events:update_event' event.id %}"
+               class="btn btn-success">Update</a>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock content %}
